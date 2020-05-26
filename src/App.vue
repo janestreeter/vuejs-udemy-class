@@ -1,62 +1,66 @@
 <template>
-  <div id="app">
-    <button v-on:click="counter++">Increase</button>
-    <button v-on:click="counter--">Decrease</button>
-    <button v-on:click="secondCounter++">Increase Second</button>
-    <p>turd: {{ counter }}</p>
-    <p>Result: {{ res() }} | {{ ouput }}</p>
-    <p>Second Counter: {{ secondCounter }}</p>
+  <div id="excercise">
+    <!-- 1) Start the Effect with the Button. The Effect should alternate the "highlight" or "shrink" class on each new setInterval tick (attach respective class to the div with id "effect" below) -->
+    <div>
+      <button @click="startEffect">Start Effect</button>
+      <div id="effect"></div>
+    </div>
+    <!-- 2) Create a couple of CSS classes and attach them via the array syntax -->
+    <div>I got no class :(</div>
+    <!-- 3) Let the user enter a class (create some example classes) and attach it -->
+    <div>
+      <input type="text">
+      <div></div>
+    </div>
+    <!-- 4) Let the user enter a class and enter true/ false for another class (create some example classes) and attach the classes -->
+    <div>
+      <input type="text">
+      <input type="text">
+      <div></div>
+    </div>
+    <!-- 5) Repeat 3) but now with values for styles (instead of class names). Attach the respective styles.  -->
+    <div>
+      <input type="text">
+      <div></div>
+    </div>
+    <!-- 6) Create a simple progress bar with setInterval and style bindings. Start it by hitting the below button. -->
+    <div>
+      <button>Start Progress</button>
+      <div></div>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'app',
-  data () {
-    return {
-      counter : 0,
-      secondCounter: 0,
-    }
-  },
-  computed:  {
-    output: function() {
-      console.log('computed');
-      return this.counter  >  5 ? 'Greater' : 'Smaller than 5'; 
+  export default {
+    name: 'excercise',
+    data: () => ({
+     
+    }),
+    methods: {
+      startEffect: function () {
+
+      },
     },
-  },
-  methods: {
-    res: function () {          
-        return this.counter  >  5 ? 'Greater' : 'Smaller';
-    }
   }
-}
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style lang = "css">
+#effect {
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
 }
 
-h1, h2 {
-  font-weight: normal;
+.highlight {
+  background-color: red;
+  width: 200px !important;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
+.shrink {
+  background-color: gray;
+  width: 50px !important;
 }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
-}
 </style>
+
