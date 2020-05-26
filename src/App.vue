@@ -3,7 +3,7 @@
     <!-- 1) Start the Effect with the Button. The Effect should alternate the "highlight" or "shrink" class on each new setInterval tick (attach respective class to the div with id "effect" below) -->
     <div>
       <button @click="startEffect">Start Effect</button>
-      <div id="effect"></div>
+      <div id="effect" :class="hl"></div>
     </div>
     <!-- 2) Create a couple of CSS classes and attach them via the array syntax -->
     <div>I got no class :(</div>
@@ -35,17 +35,21 @@
   export default {
     name: 'excercise',
     data: () => ({
+      hl:'highlight'
      
     }),
     methods: {
       startEffect: function () {
-
+        if (this.hl=="highlight") {
+          this.hl="shrink"
+        }else if(this.hl=="shrink")
+            this.hl="highlight"
       },
     },
   }
 </script>
 
-<style lang = "css">
+<style lang = "css"> 
 #effect {
   width: 100px;
   height: 100px;
@@ -62,5 +66,13 @@
   width: 50px !important;
 }
 
+ .violet {
+   background-color: violet
+}
+.green {
+  background-color: turquoise
+}
+
 </style>
+
 
