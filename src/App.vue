@@ -1,160 +1,268 @@
 <template>
-  <div id="excercise">
-    <!-- 1) Start the Effect with the Button. The Effect should alternate the "highlight" or "shrink" class on each new setInterval tick (attach respective class to the div with id "effect" below) -->
-    <div>
-      <button @click="startEffect">Start Effect</button>
-      <div id="effect" :class="hl"> </div>
-      </div>
-    <!-- 2) Create a couple of CSS classes and attach them via the array syntax -->
-    <div :class="[gc, vc]">I got a class :D</div>
-    <!-- 3) Let the user enter a class (create some example classes) and attach it -->
-      <div>
-      
-      <div :class="[gc,borderornot,vc,hl,lb]"> 
-        <div>im changing too</div>
-      </div>
-      <input type="text" v-model="lb">
+ 
+  <div id="app">
+ 
+   <section class="row">
+        <div class="small-6 columns">
+            <h1 class="text-center">YOU</h1>
+            <div class="healthbar">
+                <div class="healthbar text-center" style="background-color: green; margin: 0;
+                 color: white;"
+                 :style="{width: playerHealth + '%'}">
+                 {{ playerHealth }}
 
-    </div>
-    <!-- 4) Let the user enter a class and enter true/ false for another class (create some example classes) and attach the classes -->
-    <div >
-      <input type="text" v-model="vc">
-      <input type="text" v-model="shouldiborder">{{shouldiborder}}
-      <div>
+                </div>
+            </div>
+        </div>
+        <div class="small-6 columns">
+            <h1 class="text-center">MONSTER</h1>
+            <div class="healthbar">
+                <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;"
+                  :style="{width: monsterHealth + '%'}">
+                  {{ monsterHealth }}
 
-      </div>
-    </div>
-    <!-- 5) Repeat 3) but now with values for styles (instead of class names). Attach the respective styles.  -->
-    <div :style="[steps,colorertwo]">
-      <input type="text" >
-      <div></div>
-    </div>
-    <!-- 6) Create a simple progress bar with setInterval and style bindings. Start it by hitting the below button. -->
-    <div>
-      <button @click="startProgress">Start Progress</button>
-      <div :class="[hoorahItsDone]" :style="[stausOfProgress]">{{progress}} {{stausOfProgress }}</div>
-    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="row controls" v-if="!gameIsRunning">
+        <div class="small-12 columns">
+            <button id="start-game" @click="startGame">START NEW GAME</button>
+        </div>
+    </section>
+    <section class="row controls" v-else>
+        <div class="small-12 columns">
+            <button id="attack" @click="attack">ATTACK</button>
+            <button id="special-attack" @click="specialAttack">SPECIAL ATTACK</button>
+            <button id="heal" @click="heal">HEAL</button>
+            <button id="give-up" @click="giveUp">GIVE UP</button>
+        </div>
+    </section>
+    <section class="row log" v-if="turns.length > 0">
+        <div class="small-12 columns">
+            <ul>
+                <li v-for="turn in turns" :class="{'player-turn': turn.isPlayer, 'monster-turn': !turn.isPlayer }" :key="turn.aid">
+                  {{ turn.text }}
+                </li>
+            </ul>
+        </div>
+    </section>
+  
   </div>
+
 </template>
 
 <script>
   export default {
-    name: 'excercise',
-    data: () => ({
-      vc: 'violet',
-      gc: 'green',
-      hl: 'highlight',
-      lb: 'lightblue',
-      aq: 'aqua',
-      shouldiborder:'false',
-      color:'colour',
-      progress:0,
-      progressDone:false,
+    name: 'app',
+    data: () => ({                
+      playerHealth: 100,
+      monsterHealth: 100,
+      gameIsRunning: false,
+      turns: []
     }),
-    methods: {
-      startEffect: function () {
-        if (this.hl == "highlight") {
-          this.hl = "shrink";
-        }else if(this.hl == "shrink")
-            this.hl = "highlight";
-      },
-      startProgress: function () {
-        setInterval(() => {
-          if(this.progress >= "100"){
-            console.log('calling setInterval')
-            clearInterval(setInterval);
-            this.progressDone = true;
-            return;
-          }
-          this.progress++;
-        }, 1000);
-        
-
+      methods: {
+        startGame: function() {
+          this.gameIsRunning = true;
+          this.playerHealth = 100;
+          this.monsterHealth = 100;
+          this.turns = [];
         },
-
-      },
-    
-    computed: {
-      borderornot: function () {
-      if (this.shouldiborder == "true"){
-         return 'aqua';
-      }else 
-          return'';
-      },
-      steps: function() {
-          return{
-
-            color:this.color
-
-          }
-      
-      },
-      colorertwo: function(){
-         return{
-
-           color:this.darkblue
-         }
-      },
-      stausOfProgress: function() {
-
-            if (this.progressDone){
-                return this.hoorahItsDone;
-
-            }else{
-              return '~ OoP It is not done! Wait or keep clicking to make it go faster!!';
+        attack: function() {
+          var damage = this.calculateDamage(3, 10);
+              this.monsterHealth -= damage;
+              this.turns.unshift({
+                isPlayer: true,
+                text: 'Player hits Monster for' + damage
+              });
+            if (this.checkWin()){
+              return;
             }
+            if (this.monsterHealth <= 0) {
+              alert('You won!');
+              this.gameIsRunning = false;
+              return;
+            }
+            this.monsterAttacks();
 
-      },
-      hoorahItsDone: function() {
-        if (this.progressDone) {
-          return 'It is done! Hoorah You Did it!!'
           
-        }
+            if (this.monsterHealth <= 0) {
+              alert('You lost!');
+              this.gameIsRunning = false;
+            }
+            this.checkWin();
+        },
+        uuid: () => {
+          return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+          });
+        },
+       specialAttack: function() {
+         var damage = this.calculateDamage(10, 20);
+         this.monsterHealth -= damage;
+         this.turns.unshift({
+           isPlayer: true,
+           text: 'Player hits Monster hard for ' + damage,
+           aid: this.uuid(),
+         });
+         if (this.checkWin()) {
+           return;
+         }
+         this.playerHealth -= this.calculateDamage(5, 12);
+         this.checkWin();
+       },
+       heal: function() {
+         if (this.playerHealth <= 90) {
+           this.playerHealth += 10;
+         } else {
+           this.playerHealth = 100;
+         }
+         
+         this.monsterAttacks();
+         
+       },
+       giveUp: function() {
+          this.gameIsRunning = false;
+       },
+       monsterAttacks: function() {
+         var damage = this.calculateDamage(5, 12);
+         this.turns.unshift({
+                isPlayer: true,
+                text: 'Player heals for 10' 
+              });
+
+         this.playerHealth -= damage;
+         this.checkWin();
+          this.monsterHealth -= damage;
+              this.turns.unshift({
+                isPlayer: false,
+                text: 'Monster hits Player for' + damage
+              });
+       },
+       calculateDamage: function(min, max) {
+          return Math.max(Math.floor(Math.random() * max) + 1, min)
+       },
+       checkWin: function() {
+         if (this.monsterHealth <= 0) {
+           if (confirm('You won! New Game?')) {
+             this.startGame();
+           } else {
+            this.gameIsRunning = false;
+           }
+           return true; 
+       
+            } else if (this.playerHealth <= 0) {
+              if(confirm('You lost! New Game?')) {
+                this.startGame;
+              }else{
+                this.gameIsRunning = false;
+              }   
+              return true;
+            }
       }
-
-    }
   }
-
-
-  
+  }
+ 
 </script>
 
 <style lang = "css"> 
-#effect {
-  width: 100px;
-  height: 100px;
-  border: 1px solid black;
+@import 'assets/stylez/foundation.min.css';
+.text-center {
+    text-align: center;
 }
 
-.highlight {
-  background-color: red;
-  width: 200px;
+.healthbar {
+    width: 80%;
+    height: 40px;
+    background-color: #eee;
+    margin: auto;
+    transition: width 500ms;
 }
 
-.shrink {
-  background-color: gray;
-  width: 50px;
+.controls, .log {
+    margin-top: 30px;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 3px 6px #ccc;
 }
 
-.violet {
-  background-color: violet;
-}
-.green {
-  background-color: green;
-}
-
-.lightblue {
-  background-color: lightblue;
-}
-.aqua{
-  border:20px solid aqua;
+.turn {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 22px;
 }
 
-.colour{
-  background-color: salmon;
+.log ul {
+    list-style: none;
+    font-weight: bold;
+    text-transform: uppercase;
 }
-.darkblue{
-  background-color: darkblue;
+
+.log ul li {
+    margin: 5px;
 }
+
+.log ul .player-turn {
+    color: blue;
+    background-color: #e4e8ff;
+}
+
+.log ul .monster-turn {
+    color: red;
+    background-color: #ffc0c1;
+}
+
+button {
+    font-size: 20px;
+    background-color: #eee;
+    padding: 12px;
+    box-shadow: 0 1px 1px black;
+    margin: 10px;
+}
+
+#start-game {
+    background-color: #aaffb0;
+}
+
+#start-game:hover {
+    background-color: #76ff7e;
+}
+
+#attack {
+    background-color: #ff7367;
+}
+
+#attack:hover {
+    background-color: #ff3f43;
+}
+
+#special-attack {
+    background-color: #ffaf4f;
+}
+
+#special-attack:hover {
+    background-color: #ff9a2b;
+}
+
+#heal {
+    background-color: #aaffb0;
+}
+
+#heal:hover {
+    background-color: #76ff7e;
+}
+
+#give-up {
+    background-color: #ffffff;
+}
+
+#give-up:hover {
+    background-color: #c7c7c7;
+}
+
 
 </style>
+  
