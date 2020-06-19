@@ -1,6 +1,6 @@
 # igoboomboom
 
-> A Vue.js project
+ A Vue.js project for practice and fun
 
 ## Build Setup
 
