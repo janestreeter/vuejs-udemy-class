@@ -1,25 +1,27 @@
-<template>
- 
-  <div id="app">
-  
-  </div>
-
+<<template>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <app-user></app-user>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
-  export default {
-    name: 'app',
-    data: () => ({                
-     
-    }),
-    methods: {
-        
-    },
-  }
- 
+    import User from './components/User.vue';
+
+    export default {
+        components: {
+            appUser: User
+        }
+    }
 </script>
 
-<style lang = "css"> 
-
+<style>
+    div#detail,
+    div#edit {
+        border: 1px solid black;
+        padding: 30px;
+    }
 </style>
-  
