@@ -1,6 +1,6 @@
-# igoboomboom
+# vue-cli
 
- A Vue.js project for practice and fun
+> A Vue.js project
 
 ## Build Setup
 
