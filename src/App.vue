@@ -16,7 +16,6 @@
     import NewQuote from './components/NewQuote.vue';
     import Header from './components/Header.vue';
     
-    
     export default {
         data: function() {
             return {
@@ -28,6 +27,9 @@
         },
         methods: {
             newQuote(quote) {
+                if (this.quotes.length >= this.maxQuotes) {
+                    return alert('Please delete Quote first!');
+                }
                 this.quotes.push(quote);
             },
             deleteQuote(index) {
