@@ -40,7 +40,7 @@
           </select>
         </div>
         <div class="hobbies">
-          <h3>Add some Hobbies</h3>
+          <h3>Add some of your Hobbies</h3>
           <button @click="onAddHobby" type="button">Add Hobby</button>
           <div class="hobby-list">
             <div
@@ -69,8 +69,6 @@
 </template>
 
 <script>
-  import axios from '../../axios-auth';
-  
   export default {
     data () {
       return {
@@ -105,9 +103,6 @@
           terms: this.terms
         }
         console.log(formData);
-        axios.post('/users.json', formData)
-        .then(res => console.log(res))
-        .catch(error => console.log(error))
       }
     }
   }
